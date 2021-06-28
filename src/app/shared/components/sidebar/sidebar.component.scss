@@ -1,0 +1,26 @@
+.container-sidebar {
+    background-color: #212529;
+    width: 250px;
+    height: 100%;
+}
+.container-sidebar ul li :hover {
+    color: #ffffff;
+}
+
+.container-sidebar ul li {
+    width: 100%;
+}
+
+.container-sidebar ul li a {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.material-icons {
+    vertical-align: text-bottom;
+    margin-right: 5px;
+}
+
+.margin-top {
+    margin-top: 50px;
+}

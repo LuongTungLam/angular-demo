@@ -1,0 +1,60 @@
+<form>
+    <div class="container-fluid mt-3">
+        <div class="shadow-lg bg-body pt-3 px-3 d-flex border rounded-top">
+            <div class="col">
+                <h2>Product</h2>
+                <p>Details products</p>
+            </div>
+            <div class="col text-right align-self-center">
+                <button class="btn btn-primary">Save</button>
+            </div>
+        </div>
+        <div class="bg-light border rounded-bottom p-3" style="max-height: 80vh;">
+            <form class="row">
+                <div class="col-md-6 mb-3 text-center">
+                    <div *ngIf="imageSrc !== '' " class="d-block p-4">
+                        <img [src]=" imageSrc" class="rounded float-start" style="width: 400px; height: 400px;"
+                            alt="...">
+                    </div>
+                    <div *ngIf="imageSrc === '' ">
+                        <img [src]="product.image" class="rounded float-start"
+                            style="width: 400px; height: 400px;" alt="..." name="image">
+                    </div>
+                    <div class="custom-input-button btn btn-primary">
+                        Upload
+                        <input type="file" class="custom-input" (change)="readURL($event);" />
+                    </div>
+                </div>
+                <div class="col-md-6 mt-4">
+                    <div class="col-md-12 mb-3">
+                        <label for="inputName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="inputName" placeholder="Iphone 13 pro"
+                            [(ngModel)]="product.name" name="name">
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label for="inputDescription" class="form-label">Description</label>
+                        <textarea type="aria" class="form-control" id="inputDescription"
+                            [(ngModel)]="product.description" name="description"></textarea>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="inputPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="inputPrice" placeholder="20.000.000đ" name="price"
+                            [(ngModel)]="product.price">
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="inputQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="inputQuantity" placeholder="200" name="quantity"
+                            [(ngModel)]="product.quantity">
+                    </div>
+                    <div class="col-12 mb-4">
+                        <label for="inputStatus" class="form-label">Status</label>
+                        <select class="form-control" id="inputStatus" aria-label="Default select example">
+                            <option [selected]="product.status === 1" value="1">Available</option>
+                            <option [selected]="product.status === 0" value="0">No Available</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,104 @@
+<ng-template #modalData let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Delete Modal Popup</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p><strong>Are you sure you want to delete <span class="text-primary">{{pName}}</span> profile?</strong>
+        </p>
+
+        <p>All data related to west view product will be removed permanently.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close('Save click')">Save</button>
+    </div>
+</ng-template>
+<form>
+    <div class="container-fluid p-4"> 
+        <div class=" row ">
+            <div class="col">
+                <h2>Product</h2>
+                <p>Get all products</p>
+            </div>
+            <div class="col align-self-center">
+                <div class="row">
+                    <div class="col col-lg-8 d-block ">
+                        <input type="text" class="form-control search" placeholder="Search here" name="searchTerm"
+                            [(ngModel)]="service.searchTerm" />
+                        <i i-bs name="search" class="icon-search"></i>
+                    </div>
+                    <div class="col col-lg-4 text-right">
+                        <button class="btn btn-primary " [routerLink]="['add']" placement="top" ngbTooltip="Add">
+                            <i-bs name="plus-lg" class="material-icons" width="0.9rem" height="0.9rem"></i-bs><span>Add
+                                New</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <table class="table table-striped" data-toggle="table" data-search="true" data-show-columns="true"
+                data-filter-control="true" data-click-to-select="true">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Descripton</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let product of products$ | async">
+                        <th scope="row">{{product.id}}</th>
+                        <td>
+                            <ngb-highlight [result]="product.name" [term]="service.searchTerm"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="product.price | number" [term]="service.searchTerm">
+                            </ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="product.description"></ngb-highlight>
+                        </td>
+                        <td>
+                            <ngb-highlight [result]="product.quantity | number"></ngb-highlight>
+                        </td>
+                        <td *ngIf="product.status === 1">
+                            <div class="bg-primary text-white text-center rounded-pill">Available</div>
+                        </td>
+                        <td *ngIf="product.status === 0">
+                            <div class="bg-danger text-white text-center rounded-pill">No Available</div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-row-reverse">
+                                <i-bs type="button" name="trash-fill" (click)="triggerModal(modalData,product.name)"
+                                    class="px-2" placement="top" ngbTooltip="Delete">
+                                </i-bs>
+                                <i-bs type="button" name="pen-fill" [routerLink]="['/product',product.id]" class="px-2"
+                                    placement="top" ngbTooltip="Edit">
+                                </i-bs>
+                                <i-bs type="button" name="eye-fill" [routerLink]="['/product',product.id]" class="px-2"
+                                    placement="top" ngbTooltip="Details">
+                                </i-bs>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between p-2">
+                <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="service.page"
+                    [pageSize]="service.pageSize"></ngb-pagination>
+                <select class="custom-select" style="width: auto;" name="pageSize" [(ngModel)]="service.pageSize">
+                    <option [ngValue]="2">2 items per page</option>
+                    <option [ngValue]="4">4 items per page</option>
+                    <option [ngValue]="6">6 items per page</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
