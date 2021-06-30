@@ -1,13 +1,12 @@
 import { Injectable, PipeTransform } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { Product } from './product';
-import { PRODUCTS } from './products';
 import { DecimalPipe } from '@angular/common';
 import { debounceTime, delay, switchMap, tap } from 'rxjs/operators';
 import { SortColumn, SortDirection } from './sortable.directive';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-const baseUrl = 'http://localhost:8080/product';
 
+const baseUrl = 'http://localhost:8080/product';
 
 interface SearchResult {
     products: Product[];
@@ -20,6 +19,7 @@ interface State {
     searchTerm: string;
     sortColumn: SortColumn;
     sortDirection: SortDirection;
+    list: Product[];
 }
 
 const compare = (v1: string | number, v2: string | number) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
@@ -46,21 +46,16 @@ export class ProductService {
     private _search$ = new Subject<void>();
     private _products$ = new BehaviorSubject<Product[]>([]);
     private _total$ = new BehaviorSubject<number>(0);
-
-    private _productList?: Product[];
-
     private _state: State = {
         page: 1,
         pageSize: 4,
         searchTerm: '',
         sortColumn: '',
-        sortDirection: ''
+        sortDirection: '',
+        list: [],
     };
 
     constructor(private pipe: DecimalPipe, private http: HttpClient) {
-        this.getAll().subscribe(data => {
-            this._productList = data;
-        })
         this._search$.pipe(
             tap(() => this._loading$.next(true)),
             debounceTime(200),
@@ -71,7 +66,6 @@ export class ProductService {
             this._products$.next(result.products);
             this._total$.next(result.total);
         });
-
         this._search$.next();
     }
 
@@ -81,12 +75,18 @@ export class ProductService {
     get page() { return this._state.page; }
     get pageSize() { return this._state.pageSize; }
     get searchTerm() { return this._state.searchTerm; }
+    get productList() { return this._state.list };
 
+    set productList(list: Product[]) { this._set({ list }) }
     set page(page: number) { this._set({ page }); }
     set pageSize(pageSize: number) { this._set({ pageSize }); }
     set searchTerm(searchTerm: string) { this._set({ searchTerm }); }
     set sortColumn(sortColumn: SortColumn) { this._set({ sortColumn }); }
     set sortDirection(sortDirection: SortDirection) { this._set({ sortDirection }); }
+
+    fetchData(list: Product[]) {
+        this.productList = list;
+    }
 
     private _set(patch: Partial<State>) {
         Object.assign(this._state, patch);
@@ -97,7 +97,7 @@ export class ProductService {
         const { sortColumn, sortDirection, pageSize, page, searchTerm } = this._state;
 
         // 1. sort
-        let products = sort(this._productList!, sortColumn, sortDirection);
+        let products = sort(this.productList, sortColumn, sortDirection);
 
         // 2. filter
         products = products.filter(product => matches(product, searchTerm, this.pipe));

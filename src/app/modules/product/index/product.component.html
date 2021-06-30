@@ -6,7 +6,7 @@
         </button>
     </div>
     <div class="modal-body">
-        <p><strong>Are you sure you want to delete <span class="text-primary">{{pName}}</span> profile?</strong>
+        <p><strong>Are you sure you want to delete <span class="text-primary">{{pName}}</span> product?</strong>
         </p>
 
         <p>All data related to west view product will be removed permanently.</p>
@@ -16,7 +16,7 @@
     </div>
 </ng-template>
 <form>
-    <div class="container-fluid p-4"> 
+    <div class="container-fluid p-4">
         <div class=" row ">
             <div class="col">
                 <h2>Product</h2>
@@ -76,8 +76,9 @@
                         </td>
                         <td>
                             <div class="d-flex flex-row-reverse">
-                                <i-bs type="button" name="trash-fill" (click)="triggerModal(modalData,product.name)"
-                                    class="px-2" placement="top" ngbTooltip="Delete">
+                                <i-bs type="button" name="trash-fill"
+                                    (click)="triggerModal(modalData,product.name,product.id)" class="px-2"
+                                    placement="top" ngbTooltip="Delete">
                                 </i-bs>
                                 <i-bs type="button" name="pen-fill" [routerLink]="['/product',product.id]" class="px-2"
                                     placement="top" ngbTooltip="Edit">
