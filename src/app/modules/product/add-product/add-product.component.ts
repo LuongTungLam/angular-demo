@@ -1,6 +1,7 @@
+import { Router } from '@angular/router';
 import { ProductService } from './../product.service';
 import { Component, OnInit } from '@angular/core';
-import { Product } from '../product';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-product',
@@ -9,28 +10,51 @@ import { Product } from '../product';
   providers: [ProductService]
 })
 export class AddProductComponent implements OnInit {
+
+  productForm?: FormGroup;
+  submitted = false;
+
   product = {
     name: '',
     image: '',
-    price: 0,
+    price: '',
     description: '',
-    quantity: 0,
-    status: 0
+    quantity: '',
+    status: ''
   };
+
   imageSrc = "";
-  base64: string = "Base64...";
-  constructor(private service: ProductService) { }
+  constructor(private service: ProductService, private router: Router, private formBuilder: FormBuilder) { }
+
+  get form() { return this.productForm?.controls; }
+
 
   ngOnInit(): void {
+    this.productForm = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      image: ['', [Validators.required]],
+      price: [0 || '', [Validators.required]],
+      description: ['', [Validators.required]],
+      quantity: ['', [Validators.required]],
+      status: ['', [Validators.required]],
+    })
   }
 
   saveProduct(): void {
-    console.log(this.product);
-    this.service.create(this.product).subscribe(rs => {
-      console.log(rs);
-    }, error => {
-      console.log(error);
-    });
+    this.submitted = true;
+    if (this.productForm?.invalid) {
+      return;
+    }
+    if (this.submitted) {
+      alert('test done')
+      // this.service.create(this.product).subscribe(rs => {
+      //   if (rs === true) {
+      //     this.router.navigate(["/product"]);
+      //   }
+      // }, error => {
+      //   console.log(error);
+      // });
+    }
   }
 
   readURL(e: { target: any; }) {
@@ -43,7 +67,6 @@ export class AddProductComponent implements OnInit {
 
     reader.readAsDataURL(file as Blob);
     reader.onloadend = () => {
-      this.base64 = reader.result as string;
       this.product.image = reader.result as string;
     }
   }

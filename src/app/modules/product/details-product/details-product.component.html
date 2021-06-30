@@ -6,7 +6,7 @@
                 <p>Details products</p>
             </div>
             <div class="col text-right align-self-center">
-                <button class="btn btn-primary">Save</button>
+                <button class="btn btn-primary" (click)="saveProduct()">Save</button>
             </div>
         </div>
         <div class="bg-light border rounded-bottom p-3" style="max-height: 80vh;">
@@ -17,12 +17,12 @@
                             alt="...">
                     </div>
                     <div *ngIf="imageSrc === '' ">
-                        <img [src]="product.image" class="rounded float-start"
-                            style="width: 400px; height: 400px;" alt="..." name="image">
+                        <img [src]="product.image" class="rounded float-start" style="width: 400px; height: 400px;"
+                            alt="..." name="image">
                     </div>
                     <div class="custom-input-button btn btn-primary">
                         Upload
-                        <input type="file" class="custom-input" (change)="readURL($event);" />
+                        <input type="file" class="custom-input" accept="image/*" (change)="readURL($event);" />
                     </div>
                 </div>
                 <div class="col-md-6 mt-4">
@@ -48,7 +48,8 @@
                     </div>
                     <div class="col-12 mb-4">
                         <label for="inputStatus" class="form-label">Status</label>
-                        <select class="form-control" id="inputStatus" aria-label="Default select example">
+                        <select class="form-control" id="inputStatus" aria-label="Default select example"
+                            [(ngModel)]="product.status" name="status">
                             <option [selected]="product.status === 1" value="1">Available</option>
                             <option [selected]="product.status === 0" value="0">No Available</option>
                         </select>

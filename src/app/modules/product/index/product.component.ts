@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { Component, QueryList, ViewChildren, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -15,31 +16,44 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ProductComponent implements OnInit {
   closeModal = "";
   pName = "";
+  _alert = false;
   products$: Observable<Product[]>;
   total$: Observable<number>;
   @ViewChildren(NgbdSortableHeader) headers!: QueryList<NgbdSortableHeader>;
-  productList?: any[];
 
-  constructor(public service: ProductService, private modalService: NgbModal) {
+  constructor(public service: ProductService, private modalService: NgbModal, private router: Router) {
     this.products$ = service.products$
     this.total$ = service.total$;
+    console.log(this.router.getCurrentNavigation()?.extras.state);
   }
-  ngOnInit(): any {
+
+  ngOnInit(): void {
     this.retrieveProducts();
+  }
+
+  ngOnDestroy() {
   }
 
   retrieveProducts(): void {
     this.service.getAll().subscribe(data => {
-      this.productList = data;
       console.log(data);
+      this.service.fetchData(data);
     }, error => {
       console.log(error);
     });
   }
 
-  triggerModal(content: any, productName: string) {
+  triggerModal(content: any, productName: string, id: number) {
     this.pName = productName;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((res) => {
+      this.service.delete(id).subscribe(rs => {
+        const deleterow = this.service.productList.find(x => x.id === id);
+        this.service.productList.splice(this.service.productList.indexOf(deleterow!), 1);
+        if (rs === true) {
+          this.retrieveProducts();
+        }
+      })
+
       this.closeModal = `Closed with: ${res}`;
       //save click can add service for this
     }, (res) => {
